@@ -18,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     this->initUi();
     this->initConnect();
+    this->initPara();
 
 }
 
@@ -84,6 +85,11 @@ void MainWindow::initConnect()
     connect(ui->btn_right, SIGNAL(clicked()), ui->tableView, SLOT(pageDown()));
 }
 
+void MainWindow::initPara()
+{
+    player = NULL;
+}
+
 void MainWindow::menuCloseClick()
 {
     this->close();
@@ -106,16 +112,33 @@ void MainWindow::btnSettingClick()
 
 void MainWindow::btnOpenClick()
 {
-    QString s = QFileDialog::getOpenFileName(
+    QString fileName = QFileDialog::getOpenFileName(
                this, QStringLiteral("选择要播放的文件"),
                 "",//初始目录
                 QStringLiteral("视频文件 (*.flv *.rmvb *.avi *.MP4 *.mkv);;")
                 +QStringLiteral("音频文件 (*.mp3 *.wma *.wav);;")
                 +QStringLiteral("所有文件 (*.*)"));
-    if (!s.isEmpty())
+    if (!fileName.isEmpty())
     {
-        QFileInfo fileInfo(s);
+        QFileInfo fileInfo(fileName);
         ui->label_file->setText("{"+fileInfo.suffix()+"}  "+fileInfo.fileName());
+
+        if(NULL == player)
+        {
+            //当没有视频播放时
+             player = new Video_Player(ui->horizontalSlider, ui->label_play, ui->label_currenttime, ui->label_totaltime);
+             player->play(fileName);
+             //开启线程
+             QThreadPool::globalInstance()->start(player);
+             ui->stackedWidget->setCurrentWidget(ui->page_play);
+        }
+        else
+        {
+            //当有视频播放时
+            player->Stop();
+            player->play(fileName);
+
+        }
     }
 }
 

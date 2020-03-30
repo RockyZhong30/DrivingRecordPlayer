@@ -5,6 +5,7 @@
 #include <QMouseEvent>
 
 #include "settingList/pagemovetableview.h"
+#include "module/video_player.h"
 
 namespace Ui {
 class MainWindow;
@@ -33,8 +34,11 @@ private slots:
 private:
     void initUi();
     void initConnect();
+    void initPara();
 private:
     QFont iconFont;             //图形字体
+
+    Video_Player *player;
 
     KeyCoordinateDelegate *m_keyCoodinateDelegate;
     KeyCoordinateModel *m_pageModel;

@@ -259,7 +259,7 @@
         <item>
          <widget class="QStackedWidget" name="stackedWidget">
           <property name="currentIndex">
-           <number>0</number>
+           <number>1</number>
           </property>
           <widget class="QWidget" name="page_bg">
            <property name="styleSheet">
@@ -362,6 +362,13 @@
                <property name="bottomMargin">
                 <number>0</number>
                </property>
+               <item>
+                <widget class="QLabel" name="label_play">
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
               </layout>
              </widget>
             </item>
@@ -552,7 +559,7 @@ border-radius:0px;
               </spacer>
              </item>
              <item>
-              <widget class="VideoSlider" name="horizontalSlider">
+              <widget class="QSlider" name="horizontalSlider">
                <property name="cursor">
                 <cursorShape>PointingHandCursor</cursorShape>
                </property>
@@ -834,11 +841,6 @@ border-radius:0px;
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>VideoSlider</class>
-   <extends>QSlider</extends>
-   <header>module/videoslider.h</header>
-  </customwidget>
   <customwidget>
    <class>PageMoveTableView</class>
    <extends>QTableView</extends>

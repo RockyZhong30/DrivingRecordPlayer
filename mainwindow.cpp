@@ -24,6 +24,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    if(NULL != player)
+    {
+        player->m_runFlag = false;
+        if(QThreadPool::globalInstance()->waitForDone())
+        {
+            player = NULL;
+        }
+    }
     delete ui;
 }
 
@@ -48,10 +56,10 @@ void MainWindow::initUi()
 
     ui->btn_open->setFont(iconFont);
     ui->btn_open->setText(QChar(0xf07c));
-    ui->btn_play->setFont(iconFont);
-    ui->btn_play->setText(QChar(0xf04b));
-    ui->btn_pause->setFont(iconFont);
-    ui->btn_pause->setText(QChar(0xf04c));
+    ui->btn_play_pause->setFont(iconFont);
+    ui->btn_play_pause->setText(QChar(0xf04b));
+//    ui->btn_pause->setFont(iconFont);
+//    ui->btn_pause->setText(QChar(0xf04c));
     ui->btn_stop->setFont(iconFont);
     ui->btn_stop->setText(QChar(0xf04d));
     ui->btn_setting->setFont(iconFont);
@@ -80,6 +88,8 @@ void MainWindow::initConnect()
     connect(ui->btnMenu_Close, SIGNAL(clicked()), this, SLOT(menuCloseClick()));
     connect(ui->btn_setting, SIGNAL(clicked()), this, SLOT(btnSettingClick()));
     connect(ui->btn_open, SIGNAL(clicked()), this, SLOT(btnOpenClick()));
+    connect(ui->btn_play_pause, SIGNAL(clicked()), this, SLOT(btnPlayStartClick()));
+    connect(ui->btn_stop, SIGNAL(clicked()), this, SLOT(btnStopClick()));
 
     connect(ui->btn_left, SIGNAL(clicked()), ui->tableView, SLOT(pageUp()));
     connect(ui->btn_right, SIGNAL(clicked()), ui->tableView, SLOT(pageDown()));
@@ -127,18 +137,62 @@ void MainWindow::btnOpenClick()
         {
             //当没有视频播放时
              player = new Video_Player(ui->horizontalSlider, ui->label_play, ui->label_currenttime, ui->label_totaltime);
-             player->play(fileName);
-             //开启线程
-             QThreadPool::globalInstance()->start(player);
-             ui->stackedWidget->setCurrentWidget(ui->page_play);
+             if(player->play(fileName))
+             {
+                 ui->tableView->m_allPages = player->frameNum/9;
+//                 m_pageModel->m_pages = player->frameNum/9;
+                 m_pageModel = new KeyCoordinateModel(this, 3, 3, player->frameNum/9);
+                 ui->tableView->setModel(m_pageModel);
+                 ui->tableView->pageToFirst();
+                 ui->btn_play_pause->setText(QChar(0xf04c));
+                 player->m_start_flag = true;
+                 //开启线程
+                 player->m_runFlag = true;
+                 QThreadPool::globalInstance()->start(player);
+                 ui->stackedWidget->setCurrentWidget(ui->page_play);
+             }
         }
         else
         {
             //当有视频播放时
             player->Stop();
-            player->play(fileName);
-
+            if(player->play(fileName))
+            {
+                ui->btn_play_pause->setText(QChar(0xf04c));
+            }
         }
+    }
+}
+
+void MainWindow::btnPlayStartClick()
+{
+    if(NULL != player)
+    {
+        //暂停
+        if(player->m_start_flag)
+        {
+            if(player->m_pause_flag)
+            {
+                player->m_pause_flag = false;
+                ui->btn_play_pause->setText(QChar(0xf04c));
+            }
+            else
+            {
+                player->m_pause_flag = true;
+                ui->btn_play_pause->setText(QChar(0xf04b));
+            }
+        }
+    }
+}
+
+void MainWindow::btnStopClick()
+{
+    if(NULL != player)
+    {
+        player->m_stop_flag = true;
+        player->m_start_flag = false;
+        ui->stackedWidget->setCurrentWidget(ui->page_bg);
+        ui->btn_play_pause->setText(QChar(0xf04b));
     }
 }
 

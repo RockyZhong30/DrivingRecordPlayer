@@ -29,13 +29,15 @@ SOURCES += \
         mainwindow.cpp \
         module/VideoSlider.cpp \
         settingList/pagemovetableview.cpp \
-    module/video_player.cpp
+    module/video_player.cpp \
+    module/signdetector.cpp
 
 HEADERS += \
         mainwindow.h \
         module/VideoSlider.h \
         settingList/pagemovetableview.h \
-    module/video_player.h
+    module/video_player.h \
+    module/signdetector.h
 
 FORMS += \
         mainwindow.ui

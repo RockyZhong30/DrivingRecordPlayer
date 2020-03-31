@@ -31,6 +31,8 @@ private slots:
     void menuCloseClick();
     void btnSettingClick();
     void btnOpenClick();
+    void btnPlayStartClick();
+    void btnStopClick();
 private:
     void initUi();
     void initConnect();

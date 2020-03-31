@@ -1,4 +1,4 @@
-#ifndef PAGEMOVETABLEVIEW_H
+﻿#ifndef PAGEMOVETABLEVIEW_H
 #define PAGEMOVETABLEVIEW_H
 #include <QTableView>
 #include <QLabel>
@@ -23,7 +23,7 @@ class KeyCoordinateModel : public QAbstractListModel
 {
     Q_OBJECT
 public:
-    KeyCoordinateModel(QObject *parent);
+    KeyCoordinateModel(QObject *parent, int rows=3, int columns=3, int pages=3);
 
     int dataCount() const;
     int columnCount(const QModelIndex &) const;
@@ -35,7 +35,14 @@ public:
     {
         int num;
         QString name;
+        QImage image;
     };
+
+public:
+    QVector<Group_ST> m_groupStVec;
+    int m_pages; //显示的总页数
+    int m_rows;
+    int m_columns;
 
 protected:
 
@@ -49,10 +56,6 @@ public slots:
 private:
 //    int m_group;
 //    QStringList m_stringList;
-    QVector<Group_ST> m_groupStVec;
-    int m_pages; //显示的总页数
-    int m_rows;
-    int m_columns;
 };
 
 
@@ -64,6 +67,12 @@ public:
 
     void setLabelPage(QLabel *page);
     void pageToFirst();
+
+public:
+    int m_rowCount;
+    int m_columnCount;
+    int m_currPage;//当前页
+    int m_allPages;//总页数
 
 
 private:
@@ -82,10 +91,6 @@ public slots:
 private:
     QLabel *m_labelPage;
     QScrollBar *m_qScrollBar;
-    int m_rowCount;
-    int m_columnCount;
-    int m_currPage;//当前页
-    int m_allPages;//总页数
 
 };
 #endif // PAGEMOVETABLEVIEW_H

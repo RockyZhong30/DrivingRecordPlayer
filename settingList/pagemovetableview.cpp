@@ -108,12 +108,12 @@ void KeyCoordinateDelegate::paint(QPainter *painter, const QStyleOptionViewItem 
 }
 
 
-KeyCoordinateModel::KeyCoordinateModel(QObject *parent) :
+KeyCoordinateModel::KeyCoordinateModel(QObject *parent, int rows, int columns, int pages) :
     QAbstractListModel(parent)
+  ,m_rows(rows)
+  ,m_columns(columns)
+  ,m_pages(pages)
 {
-    m_pages = 3;
-    m_rows = 3;
-    m_columns = 3;
     m_groupStVec.clear();
 }
 
@@ -230,23 +230,7 @@ void PageMoveTableView::initUi()
     this->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     this->setFocusPolicy(Qt::StrongFocus);
     this->setAcceptDrops(true);
-    this->setStyleSheet(QString::fromUtf8("#preKeyView\n"
-    "{\n"
-    "background-color: rgb(45,1,1);\n"
-    "selection-background-color: rgb(45,1,1);\n"
-    "}\n"
-    "QScrollBar::vertical {\n"
-    "    border:0px solid red;\n"
-    "    width: 5px;\n"
-    "    background:white;\n"
-    "}\n"
-    "\n"
-    "QScrollBar::handle:vertical {\n"
-    "    border: 3px solid gray;\n"
-    "    border-radius:5px;\n"
-    "    min-height:0px;\n"
-    "    margin:0px 0 0px 0;\n"
-    "}"));
+
     this->setFrameShape(QFrame::NoFrame);
     this->setLineWidth(0);
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -278,15 +262,15 @@ void PageMoveTableView::pageToFirst()
 
 void PageMoveTableView::takePara()
 {
-    int width=this->geometry().width();
-    int height=this->geometry().height();
-//    qDebug() << "++++++++++++++++++++++++++++++++++++++++width:" << width << "height:" << height;
+    int width=this->geometry().width()-(this->geometry().width()%m_columnCount);
+    int height=this->geometry().height()-(height=this->geometry().height()%m_rowCount);
+    qDebug() << "++++++++++++++++++++++++++++++++++++++++width:" << width << "height:" << height;
     this->horizontalHeader()->setDefaultSectionSize(width/m_columnCount);
     this->verticalHeader()->setDefaultSectionSize(height/m_rowCount);
     this->setGeometry(this->geometry().x(),this->geometry().y(),width,height);
     int max = height*(m_allPages-1);
     m_qScrollBar->setRange(0,max);
-    m_qScrollBar->setPageStep(height);
+    m_qScrollBar->setPageStep(156);
 }
 
 void PageMoveTableView::takeParaSlot()

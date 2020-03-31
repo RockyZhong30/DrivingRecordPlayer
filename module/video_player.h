@@ -1,4 +1,4 @@
-#ifndef VIDEO_PLAYER_H
+﻿#ifndef VIDEO_PLAYER_H
 #define VIDEO_PLAYER_H
 
 #include <QThreadPool>
@@ -19,7 +19,7 @@ class Video_Player : public QRunnable
 {
 public:
     Video_Player(QSlider *slider,  QLabel *video_label, QLabel *label_pos, QLabel *label_total);
-    void play(QString path);
+    bool play(QString path);
     void run();
     void Stop();
     void Start();
@@ -29,7 +29,19 @@ public:
     void PaseOrStart();
     void Set_postion(long po);
     double get_current_pos();
-    static bool Is_Video_play ;
+    QString formatTime(int second);
+
+public:
+    bool m_runFlag;                 //线程运行标志
+
+    bool m_openvideo_flag;          //打开视频文件是否成功标志
+    bool m_pause_flag;               //暂停检测标志
+    bool m_start_flag;              //开始检测标志
+    bool m_stop_flag;                //停止检测标志
+    int m_sign_count;               //检测到的交通标志的总个数
+
+    int rate;
+    int frameNum;
 
 private:
     QSlider* slider;
@@ -37,11 +49,10 @@ private:
     QLabel *video_label;
     QLabel *label_pos;
     QLabel *label_total;
-    VideoCapture capture=NULL;
+    VideoCapture capture;
     void show_img(Mat src,QLabel *label);
     Mat frame;
-    bool Stop_Play = false;
-    bool Is_Pase = false;
+
     int speed =30;
     int pos=-1;
 };

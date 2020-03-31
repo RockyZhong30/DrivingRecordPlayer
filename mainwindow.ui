@@ -461,7 +461,7 @@ border-radius:0px;
               </spacer>
              </item>
              <item>
-              <widget class="QPushButton" name="btn_play">
+              <widget class="QPushButton" name="btn_play_pause">
                <property name="minimumSize">
                 <size>
                  <width>36</width>
@@ -472,29 +472,7 @@ border-radius:0px;
                 <cursorShape>PointingHandCursor</cursorShape>
                </property>
                <property name="toolTip">
-                <string>播放</string>
-               </property>
-               <property name="styleSheet">
-                <string notr="true"/>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="btn_pause">
-               <property name="minimumSize">
-                <size>
-                 <width>36</width>
-                 <height>36</height>
-                </size>
-               </property>
-               <property name="cursor">
-                <cursorShape>PointingHandCursor</cursorShape>
-               </property>
-               <property name="toolTip">
-                <string>暂停</string>
+                <string>播放/暂停</string>
                </property>
                <property name="styleSheet">
                 <string notr="true"/>
@@ -828,6 +806,19 @@ border-radius:0px;
         </item>
         <item>
          <widget class="PageMoveTableView" name="tableView">
+          <property name="styleSheet">
+           <string notr="true">    QScrollBar::vertical {
+        border:0px solid red;
+        width: 5px;
+        background:white;
+    }
+    QScrollBar::handle:vertical {
+        border: 3px solid gray;
+        border-radius:5px;
+        min-height:0px;
+        margin:0px 0 0px 0;
+}</string>
+          </property>
           <property name="frameShape">
            <enum>QFrame::NoFrame</enum>
           </property>

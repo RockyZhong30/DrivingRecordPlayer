@@ -23,7 +23,7 @@ class KeyCoordinateModel : public QAbstractListModel
 {
     Q_OBJECT
 public:
-    KeyCoordinateModel(QObject *parent, int rows=3, int columns=3, int pages=3);
+    KeyCoordinateModel(QObject *parent, int rows=3, int columns=3, int pages=1);
 
     int dataCount() const;
     int columnCount(const QModelIndex &) const;
@@ -37,6 +37,9 @@ public:
         QString name;
         QImage image;
     };
+
+public:
+    void addgroupStData(Group_ST st);
 
 public:
     QVector<Group_ST> m_groupStVec;

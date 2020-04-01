@@ -13,6 +13,8 @@
 #include <opencv2/opencv.hpp>
 #include <QTest>
 #include <QLabel>
+#include "settingList/pagemovetableview.h"
+#include "global/globalvar.h"
 using namespace cv;
 
 class Video_Player : public QRunnable
@@ -39,9 +41,13 @@ public:
     bool m_start_flag;              //开始检测标志
     bool m_stop_flag;                //停止检测标志
     int m_sign_count;               //检测到的交通标志的总个数
+    int m_pictureNum;               //检测图片号
 
     int rate;
     int frameNum;
+
+protected:
+    void showSaveImage(cv::Mat &roi);        //显示保存检测到的交通标志图片
 
 private:
     QSlider* slider;

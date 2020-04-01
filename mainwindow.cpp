@@ -10,6 +10,8 @@
 #define SCREEN_PLAY_WIDTH 700
 #define SCREEN_IMG_WEIDTH 300
 
+MainWindow *MainWindow::mMainWindow = NULL;
+
 MainWindow::MainWindow(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::MainWindow)
@@ -33,6 +35,13 @@ MainWindow::~MainWindow()
         }
     }
     delete ui;
+}
+
+MainWindow *MainWindow::getObj()
+{
+    if(mMainWindow == NULL)
+        mMainWindow = new MainWindow();
+    return mMainWindow;
 }
 
 void MainWindow::initUi()
@@ -65,17 +74,17 @@ void MainWindow::initUi()
     ui->btn_setting->setFont(iconFont);
     ui->btn_setting->setText(QChar(0xf0c9));
 
-    ui->btn_left->setFont(iconFont);
-    ui->btn_left->setText(QChar(0xf0d9));
-    ui->btn_right->setFont(iconFont);
-    ui->btn_right->setText(QChar(0xf0da));
+//    ui->btn_left->setFont(iconFont);
+//    ui->btn_left->setText(QChar(0xf0d9));
+//    ui->btn_right->setFont(iconFont);
+//    ui->btn_right->setText(QChar(0xf0da));
 
     iconFont.setPointSize(111);
     ui->label_bgicon->setFont(iconFont);
     ui->label_bgicon->setText(QChar(0xf01d));
     ui->label_bginfo->setText("Designed by xu.rz");
 
-    ui->tableView->setLabelPage(ui->label_page);
+//    ui->tableView->setLabelPage(ui->label_page);
     m_keyCoodinateDelegate = new KeyCoordinateDelegate(this);
     m_pageModel = new KeyCoordinateModel(this);
     ui->tableView->setModel(m_pageModel);
@@ -91,8 +100,10 @@ void MainWindow::initConnect()
     connect(ui->btn_play_pause, SIGNAL(clicked()), this, SLOT(btnPlayStartClick()));
     connect(ui->btn_stop, SIGNAL(clicked()), this, SLOT(btnStopClick()));
 
-    connect(ui->btn_left, SIGNAL(clicked()), ui->tableView, SLOT(pageUp()));
-    connect(ui->btn_right, SIGNAL(clicked()), ui->tableView, SLOT(pageDown()));
+//    connect(ui->btn_left, SIGNAL(clicked()), ui->tableView, SLOT(pageUp()));
+//    connect(ui->btn_right, SIGNAL(clicked()), ui->tableView, SLOT(pageDown()));
+
+    connect(ui->tableView, SIGNAL(pressed(QModelIndex)), this, SLOT(pageViewClick(QModelIndex)));
 }
 
 void MainWindow::initPara()
@@ -140,8 +151,8 @@ void MainWindow::btnOpenClick()
              if(player->play(fileName))
              {
                  ui->tableView->m_allPages = player->frameNum/9;
-//                 m_pageModel->m_pages = player->frameNum/9;
-                 m_pageModel = new KeyCoordinateModel(this, 3, 3, player->frameNum/9);
+
+//                 m_pageModel = new KeyCoordinateModel(this, 3, 3, player->frameNum/9);
                  ui->tableView->setModel(m_pageModel);
                  ui->tableView->pageToFirst();
                  ui->btn_play_pause->setText(QChar(0xf04c));
@@ -196,6 +207,22 @@ void MainWindow::btnStopClick()
     }
 }
 
+void MainWindow::pageViewClick(QModelIndex index)
+{
+    if(index.isValid()==false)
+    {
+        return;
+    }
+
+//    qDebug() << "name:" << index.data(Qt::DisplayRole).toString() << "num:" << index.data(Qt::DecorationRole).toInt();
+}
+
+void MainWindow::updateTableViewImg(KeyCoordinateModel::Group_ST st)
+{
+    m_pageModel->addgroupStData(st);
+//    qDebug() << "-----------------name:" << st.name << "num" << st.num;
+}
+
 void MainWindow::mousePressEvent(QMouseEvent *event)
 {
     //只能是鼠标左键移动和改变大小
@@ -219,5 +246,16 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
     {
         QPoint movePpos = event->globalPos();
         move(movePpos - m_movePoint);
+    }
+}
+
+void MainWindow::on_horizontalSlider_sliderMoved(int position)
+{
+    //拖动进度条响应 PaseOrStart在这里非常重要,实现了拖动时的动态变化
+    if(NULL != player)
+    {
+        player->Pase();
+        ui->btn_play_pause->setText(QChar(0xf04b));
+        player->Set_postion(ui->horizontalSlider->value());
     }
 }

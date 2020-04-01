@@ -30,14 +30,17 @@ SOURCES += \
         module/VideoSlider.cpp \
         settingList/pagemovetableview.cpp \
     module/video_player.cpp \
-    module/signdetector.cpp
+    module/signdetector.cpp \
+    global/globalvar.cpp
 
 HEADERS += \
         mainwindow.h \
         module/VideoSlider.h \
         settingList/pagemovetableview.h \
     module/video_player.h \
-    module/signdetector.h
+    module/signdetector.h \
+    common.h \
+    global/globalvar.h
 
 FORMS += \
         mainwindow.ui

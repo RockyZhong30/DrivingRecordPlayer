@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "mainwindow.h"
 
 Video_Player::Video_Player(QSlider *slider,  QLabel *video_label, QLabel *label_pos, QLabel *label_total)
 {
@@ -93,6 +94,7 @@ void Video_Player::Start()
     //打开播放锁
     m_stop_flag=false;
 }
+
 void Video_Player::Pase()
 {
     //暂停
@@ -122,12 +124,45 @@ QString Video_Player::formatTime(int second)
 
 }
 
+void Video_Player::showSaveImage(Mat &roi)
+{
+//    //拼接图片文件名
+//    string fileName = "signimages/"+to_string(m_num)+".jpg";
+//    //保存图片
+//    imwrite(fileName,roi);
+//    //图片号加1
+//    m_num++;
+//    //显示roi
+//    selectLabelShow(fileName);
+
+    QString fileName = GlobalVar::IMG_SAVE_DIR_PATH+"/"+QString::number(m_pictureNum)+".jpg";
+    imwrite(fileName.toStdString(), roi);
+    KeyCoordinateModel::Group_ST st;
+    st.num = m_pictureNum;
+    st.name = fileName;
+
+    MainWindow::getObj()->updateTableViewImg(st);
+
+    m_pictureNum++;
+}
+
 void Video_Player::Set_postion(long po){
     //根据frame进行设置位置
-    this->pos=po;
+    this->pos = po;
 }
-void Video_Player::run(){
+void Video_Player::run()
+{
     //player的线程函数
+
+    /*****创建SignDetector类对象*****/
+    SignDetector signdetector;
+    m_sign_count = 0;           //初始化检测到的交通标志的总个数
+    int last_count = 0;         //上一次检测到交通标志的个数
+    int cur_count = 0;          //当前检测到交通标志的个
+    bool isZero = false;        //是否没有检测到交通标志
+    bool first = true;          //是否第一次检测到交通标志
+    m_pictureNum = 1;
+
     while(m_runFlag)
     {
         cv::waitKey(25);
@@ -160,13 +195,6 @@ void Video_Player::run(){
         cv::resize(frame, frame, cv::Size(640,368), 0, 0);
 
         /*********下面是：基于RGB的交通标志检测*********/
-        /*****创建SignDetector类对象*****/
-        SignDetector signdetector;
-        m_sign_count = 0;           //初始化检测到的交通标志的总个数
-        int last_count = 0;         //上一次检测到交通标志的个数
-        int cur_count = 0;          //当前检测到交通标志的个
-        bool isZero = false;        //是否没有检测到交通标志
-        bool first = true;          //是否第一次检测到交通标志
 
         //色彩分割
         Mat matRgb = signdetector.colorSegmentation(frame);
@@ -235,8 +263,8 @@ void Video_Player::run(){
                 //将检测到图像显示到label,并保存
                 for(int i=0; i< cur_count;i++)
                 {
-//                    Mat roi = tmp(Rect(boundRect[index[i]].tl().x,boundRect[index[i]].tl().y,boundRect[index[i]].width,boundRect[index[i]].height));
-//                    showSaveImage(roi);
+                    Mat roi = tmp(Rect(boundRect[index[i]].tl().x,boundRect[index[i]].tl().y,boundRect[index[i]].width,boundRect[index[i]].height));
+                    showSaveImage(roi);
                 }
             }
             else
@@ -251,8 +279,8 @@ void Video_Player::run(){
                     //将检测到图像显示到label,并保存
                     for(int i=0; i< cur_count;i++)
                     {
-//                        Mat roi = tmp(Rect(boundRect[index[i]].tl().x,boundRect[index[i]].tl().y,boundRect[index[i]].width,boundRect[index[i]].height));
-//                        showSaveImage(roi);
+                        Mat roi = tmp(Rect(boundRect[index[i]].tl().x,boundRect[index[i]].tl().y,boundRect[index[i]].width,boundRect[index[i]].height));
+                        showSaveImage(roi);
                     }
                 }
                 else if(cur_count > last_count)  //(3)由检测1个，持续当前检测变成2时，则增加了1个
@@ -261,8 +289,8 @@ void Video_Player::run(){
                     //将检测到图像显示到label,并保存
                     for(int i=0; i<(cur_count-last_count);i++)
                     {
-//                        Mat roi = tmp(Rect(boundRect[index[i]].tl().x,boundRect[index[i]].tl().y,boundRect[index[i]].width,boundRect[index[i]].height));
-//                        showSaveImage(roi);
+                        Mat roi = tmp(Rect(boundRect[index[i]].tl().x,boundRect[index[i]].tl().y,boundRect[index[i]].width,boundRect[index[i]].height));
+                        showSaveImage(roi);
                     }
                 }
             }
@@ -276,12 +304,13 @@ void Video_Player::run(){
         }
         index.erase(index.begin(),index.end());
 
+        long i = capture.get(CAP_PROP_POS_FRAMES);
+
 
 //        //暂停响应
 //       if (!Is_Pase)
 //       {
 //           bool ret = capture.read(frame);
-//           long i = capture.get(1);
 //            if(Stop_Play){
 //                break;
 //            }
@@ -289,15 +318,13 @@ void Video_Player::run(){
 //                continue;
 //            }
 //            show_img(frame,video_label);
-////            QMetaObject::invokeMethod(slider, "setValue", Qt::QueuedConnection, Q_ARG(int, i));
-////             QMetaObject::invokeMethod(label_pos, "setText", Qt::QueuedConnection,Q_ARG(QString,QString::number(i)));
 //            QTest::qSleep(speed);
 //       }
 
         //将图像显示到label中
         show_img(frame, video_label);
-//        QMetaObject::invokeMethod(slider, "setValue", Qt::QueuedConnection, Q_ARG(int, i));
-//        QMetaObject::invokeMethod(label_pos, "setText", Qt::QueuedConnection,Q_ARG(QString,QString::number(i)));
+        QMetaObject::invokeMethod(slider, "setValue", Qt::QueuedConnection, Q_ARG(int, i));
+        QMetaObject::invokeMethod(label_pos, "setText", Qt::QueuedConnection,Q_ARG(QString,QString::number(i)));
 
     }
 }

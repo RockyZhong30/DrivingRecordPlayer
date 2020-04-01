@@ -19,6 +19,12 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    static MainWindow *getObj();
+
+public:
+    KeyCoordinateDelegate *m_keyCoodinateDelegate;
+    KeyCoordinateModel *m_pageModel;
+
 protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
@@ -33,6 +39,13 @@ private slots:
     void btnOpenClick();
     void btnPlayStartClick();
     void btnStopClick();
+
+    void pageViewClick(QModelIndex index);
+
+    void on_horizontalSlider_sliderMoved(int position);
+
+public slots:
+    void updateTableViewImg(KeyCoordinateModel::Group_ST st);
 private:
     void initUi();
     void initConnect();
@@ -42,11 +55,9 @@ private:
 
     Video_Player *player;
 
-    KeyCoordinateDelegate *m_keyCoodinateDelegate;
-    KeyCoordinateModel *m_pageModel;
-
 private:
     Ui::MainWindow *ui;
+    static MainWindow *mMainWindow;
 };
 
 #endif // MAINWINDOW_H

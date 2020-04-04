@@ -127,6 +127,7 @@ KeyCoordinateModel::KeyCoordinateModel(QObject *parent, int rows, int columns, i
   ,m_columns(columns)
   ,m_pages(pages)
 {
+
     m_groupStVec.clear();
 }
 
@@ -249,6 +250,7 @@ PageMoveTableView::PageMoveTableView(QWidget *parent) :
     m_rowCount = 3;
     m_columnCount = 3;
     m_allPages = 1;
+    m_labelPage = NULL;
 }
 
 void PageMoveTableView::initUi()
@@ -321,7 +323,7 @@ void PageMoveTableView::pageDown()
 
 void PageMoveTableView::showLabelPage()
 {
-    if(m_labelPage)
+    if(NULL != m_labelPage)
     {
         if(m_allPages==0)
             m_labelPage->setText("0/0");

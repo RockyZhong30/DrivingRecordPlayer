@@ -5,13 +5,20 @@
 #include <vector>
 #include "mainwindow.h"
 
-Video_Player::Video_Player(QSlider *slider,  QLabel *video_label, QLabel *label_pos, QLabel *label_total)
+Video_Player::Video_Player(QSlider *slider,  QLabel *video_label, QLabel *label_pos, QLabel *label_total, QLabel *img_0, QLabel *img_1, QLabel *img_2, QLabel *img_3, QLabel *img_4, QLabel *img_5)
 {
     //构造函数
     this->slider = slider;
     this->video_label = video_label;
     this->label_pos=label_pos;
     this->label_total=label_total;
+
+    this->img_0 = img_0;
+    this->img_1 = img_1;
+    this->img_2 = img_2;
+    this->img_3 = img_3;
+    this->img_4 = img_4;
+    this->img_5 = img_5;
 
     //初始化打开视频文件标志
     m_openvideo_flag = false;
@@ -137,11 +144,38 @@ void Video_Player::showSaveImage(Mat &roi)
 
     QString fileName = GlobalVar::IMG_SAVE_DIR_PATH+"/"+QString::number(m_pictureNum)+".jpg";
     imwrite(fileName.toStdString(), roi);
-    KeyCoordinateModel::Group_ST st;
-    st.num = m_pictureNum;
-    st.name = fileName;
 
-    MainWindow::getObj()->updateTableViewImg(st);
+//    qDebug() << "-----------------------fileName:" << fileName << m_pictureNum;
+//    MainWindow::getObj()->updateImg(fileName, m_pictureNum);
+//    QPixmap pixmap(fileName);
+////    QMetaObject::invokeMethod(img_0, "setPixmap", Qt::QueuedConnection, Q_ARG(QPixmap, pixmap));
+//    img_0->setPixmap(pixmap);
+
+    QPixmap pixmap(fileName);
+    int value = m_pictureNum % 6;
+    switch (value)
+    {
+    case 1:
+        img_0->setPixmap(pixmap);
+        break;
+    case 2:
+        img_1->setPixmap(pixmap);
+        break;
+    case 3:
+        img_2->setPixmap(pixmap);
+        break;
+    case 4:
+        img_3->setPixmap(pixmap);
+        break;
+    case 5:
+        img_4->setPixmap(pixmap);
+        break;
+    case 0:
+        img_5->setPixmap(pixmap);
+        break;
+    default:
+        break;
+    }
 
     m_pictureNum++;
 }

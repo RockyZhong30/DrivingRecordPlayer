@@ -84,12 +84,22 @@ void MainWindow::initUi()
     ui->label_bgicon->setText(QChar(0xf01d));
     ui->label_bginfo->setText("Designed by xu.rz");
 
-//    ui->tableView->setLabelPage(ui->label_page);
+    ui->img_0->setScaledContents(true);
+    ui->img_1->setScaledContents(true);
+    ui->img_2->setScaledContents(true);
+    ui->img_3->setScaledContents(true);
+    ui->img_4->setScaledContents(true);
+    ui->img_5->setScaledContents(true);
+
+#if 0
+    //    ui->tableView->setLabelPage(ui->label_page);
     m_keyCoodinateDelegate = new KeyCoordinateDelegate(this);
     m_pageModel = new KeyCoordinateModel(this);
     ui->tableView->setModel(m_pageModel);
     ui->tableView->setItemDelegate(m_keyCoodinateDelegate);
     ui->tableView->takeParaSlot();
+    connect(ui->tableView, SIGNAL(pressed(QModelIndex)), this, SLOT(pageViewClick(QModelIndex)));
+#endif
 }
 
 void MainWindow::initConnect()
@@ -102,8 +112,6 @@ void MainWindow::initConnect()
 
 //    connect(ui->btn_left, SIGNAL(clicked()), ui->tableView, SLOT(pageUp()));
 //    connect(ui->btn_right, SIGNAL(clicked()), ui->tableView, SLOT(pageDown()));
-
-    connect(ui->tableView, SIGNAL(pressed(QModelIndex)), this, SLOT(pageViewClick(QModelIndex)));
 }
 
 void MainWindow::initPara()
@@ -120,7 +128,9 @@ void MainWindow::btnSettingClick()
 {
     if(ui->frame_img->isHidden())
     {
+#if 0
         ui->tableView->takeParaSlot();
+#endif
         ui->frame_img->show();
         this->setFixedSize(SCREEN_IMG_WEIDTH+SCREEN_PLAY_WIDTH, SCREEN_HEIGHT);
     }
@@ -147,17 +157,18 @@ void MainWindow::btnOpenClick()
         if(NULL == player)
         {
             //当没有视频播放时
-             player = new Video_Player(ui->horizontalSlider, ui->label_play, ui->label_currenttime, ui->label_totaltime);
+             player = new Video_Player(ui->horizontalSlider, ui->label_play, ui->label_currenttime, ui->label_totaltime, ui->img_0, ui->img_1, ui->img_2, ui->img_3, ui->img_4, ui->img_5);
              if(player->play(fileName))
              {
-                 ui->tableView->m_allPages = player->frameNum/9;
-
+#if 0
+//                 ui->tableView->m_allPages = player->frameNum/9;
 //                 m_pageModel = new KeyCoordinateModel(this, 3, 3, player->frameNum/9);
-                 ui->tableView->setModel(m_pageModel);
-                 ui->tableView->pageToFirst();
+//                 ui->tableView->pageToFirst();
+//                 ui->tableView->setModel(m_pageModel);
+#endif
                  ui->btn_play_pause->setText(QChar(0xf04c));
                  player->m_start_flag = true;
-                 //开启线程
+//                 //开启线程
                  player->m_runFlag = true;
                  QThreadPool::globalInstance()->start(player);
                  ui->stackedWidget->setCurrentWidget(ui->page_play);
@@ -207,6 +218,7 @@ void MainWindow::btnStopClick()
     }
 }
 
+#if 0
 void MainWindow::pageViewClick(QModelIndex index)
 {
     if(index.isValid()==false)
@@ -216,11 +228,37 @@ void MainWindow::pageViewClick(QModelIndex index)
 
 //    qDebug() << "name:" << index.data(Qt::DisplayRole).toString() << "num:" << index.data(Qt::DecorationRole).toInt();
 }
+#endif
 
-void MainWindow::updateTableViewImg(KeyCoordinateModel::Group_ST st)
+
+void MainWindow::updateImg(QString imgName, int imgNum)
 {
-    m_pageModel->addgroupStData(st);
-//    qDebug() << "-----------------name:" << st.name << "num" << st.num;
+//    qDebug() << "-----------------name:" << imgName << "num" << imgNum;
+//    QPixmap pixmap(imgName);
+//    int value = imgNum % 6;
+//    switch (value)
+//    {
+//    case 0:
+//        ui->img_0->setPixmap(pixmap);
+//        break;
+//    case 1:
+//        ui->img_1->setPixmap(pixmap);
+//        break;
+//    case 2:
+//        ui->img_2->setPixmap(pixmap);
+//        break;
+//    case 3:
+//        ui->img_3->setPixmap(pixmap);
+//        break;
+//    case 4:
+//        ui->img_4->setPixmap(pixmap);
+//        break;
+//    case 5:
+//        ui->img_5->setPixmap(pixmap);
+//        break;
+//    default:
+//        break;
+//    }
 }
 
 void MainWindow::mousePressEvent(QMouseEvent *event)

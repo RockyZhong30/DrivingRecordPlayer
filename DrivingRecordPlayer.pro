@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui xml testlib
+QT       += core gui xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -45,10 +45,7 @@ HEADERS += \
 FORMS += \
         mainwindow.ui
 
-# Default rules for deployment.
-qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
-!isEmpty(target.path): INSTALLS += target
+
 
 INCLUDEPATH +=  $$PWD/src/include
                 $$PWD/src/include/opencv
@@ -74,6 +71,8 @@ LIBS += $$PWD/src/lib/libopencv_core343.dll.a\
         $$PWD/src/lib/libopencv_shape343.dll.a\
         $$PWD/src/lib/libopencv_superres343.dll.a\
         $$PWD/src/lib/libopencv_videostab343.dll.a
+
+RC_ICONS = logo.ico
 
 RESOURCES += \
     res.qrc

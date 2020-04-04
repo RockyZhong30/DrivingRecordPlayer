@@ -17,6 +17,7 @@ int main(int argc, char *argv[])
         dir.mkpath(GlobalVar::IMG_SAVE_DIR_PATH);
     }
     MainWindow w;
+    w.setWindowTitle("DrivingRecordPlayer");
     w.show();
 
     return a.exec();

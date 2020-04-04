@@ -3,8 +3,9 @@
 
 #include <QWidget>
 #include <QMouseEvent>
-
+#if 0
 #include "settingList/pagemovetableview.h"
+#endif
 #include "module/video_player.h"
 
 namespace Ui {
@@ -22,8 +23,10 @@ public:
     static MainWindow *getObj();
 
 public:
+#if 0
     KeyCoordinateDelegate *m_keyCoodinateDelegate;
     KeyCoordinateModel *m_pageModel;
+#endif
 
 protected:
     void mousePressEvent(QMouseEvent *event);
@@ -40,12 +43,14 @@ private slots:
     void btnPlayStartClick();
     void btnStopClick();
 
+#if 0
     void pageViewClick(QModelIndex index);
+#endif
 
     void on_horizontalSlider_sliderMoved(int position);
 
 public slots:
-    void updateTableViewImg(KeyCoordinateModel::Group_ST st);
+    void updateImg(QString imgName, int imgNum);
 private:
     void initUi();
     void initConnect();

@@ -11,16 +11,18 @@
 #include <QMessageBox>
 #include <QSlider>
 #include <opencv2/opencv.hpp>
-#include <QTest>
+//#include <QTest>
 #include <QLabel>
+#if 0
 #include "settingList/pagemovetableview.h"
+#endif
 #include "global/globalvar.h"
 using namespace cv;
 
 class Video_Player : public QRunnable
 {
 public:
-    Video_Player(QSlider *slider,  QLabel *video_label, QLabel *label_pos, QLabel *label_total);
+    Video_Player(QSlider *slider,  QLabel *video_label, QLabel *label_pos, QLabel *label_total, QLabel *img_0, QLabel *img_1, QLabel *img_2, QLabel *img_3, QLabel *img_4, QLabel *img_5);
     bool play(QString path);
     void run();
     void Stop();
@@ -55,6 +57,14 @@ private:
     QLabel *video_label;
     QLabel *label_pos;
     QLabel *label_total;
+
+    QLabel *img_0;
+    QLabel *img_1;
+    QLabel *img_2;
+    QLabel *img_3;
+    QLabel *img_4;
+    QLabel *img_5;
+
     VideoCapture capture;
     void show_img(Mat src,QLabel *label);
     Mat frame;
